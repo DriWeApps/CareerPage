@@ -1,0 +1,32 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+
+model careerapplication {
+  id           Int      @id @default(autoincrement())
+  jobTitle     String?
+  name         String
+  email        String
+  dob          String?
+  mobileNumber String?
+  education    String?
+  experience   String?
+  address      String?
+  resumeUrl    String?
+  createdAt    DateTime @default(now())
+}
