@@ -47,14 +47,14 @@ export default function HomePage() {
               e.preventDefault();
               const fd = new FormData(e.currentTarget as HTMLFormElement);
               const res = await fetch('/api/application', { method: 'POST', body: fd });
-              const data = await res.json();
               if (res.ok) {
-                alert("✅ " + data.message);
+                // show a friendly popup and close
+                alert('✅ Application submitted successfully');
                 setShowForm(false);
               } else {
-                alert("❌ " + (data.error || "Submission failed"));
+                const err = await res.json().catch(() => ({ error: 'Failed' }));
+                alert('❌ ' + (err?.error || 'Submission failed'));
               }
-
             }}
             encType="multipart/form-data"
             className="bg-white p-6 rounded-lg w-full max-w-lg space-y-4"

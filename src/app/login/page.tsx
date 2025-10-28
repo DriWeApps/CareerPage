@@ -1,4 +1,5 @@
 'use client';
+
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -12,7 +13,6 @@ export default function LoginPage() {
     setLoading(true);
 
     const fd = new FormData(e.currentTarget as HTMLFormElement);
-    // You might be using "username" or "email" field — we expect "email"
     const email = fd.get('email')?.toString() || '';
     const password = fd.get('password')?.toString() || '';
 
@@ -24,16 +24,28 @@ export default function LoginPage() {
       });
 
       const data = await res.json();
-      if (res.ok) {
-        // successful login
+
+      // ✅ Admin direct login check (bypasses API auth)
+      if (email === 'admin@gmail.com' && password === 'admin@123') {
         localStorage.setItem('isLoggedIn', 'true');
-        router.push('/'); // go to home page (src/app/page.tsx)
-      } else {
-        if (msg.current) msg.current.textContent = data?.error || 'Login failed';
+        localStorage.setItem('userEmail', email);
+        router.push('/dashboard');
+        return;
       }
+
+      // ✅ Normal user login (if API validates)
+      if (res.ok && data.success) {
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
+        router.push('/');
+        return;
+      }
+
+      // ❌ Invalid credentials
+      if (msg.current) msg.current.textContent = data?.error || 'Invalid login';
     } catch (err) {
-      if (msg.current) msg.current.textContent = 'Server error';
       console.error(err);
+      if (msg.current) msg.current.textContent = 'Server error';
     } finally {
       setLoading(false);
     }
@@ -47,17 +59,29 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-sm font-medium">Email</label>
-            <input name="email" type="email" required className="mt-1 w-full p-2 border rounded-lg" />
+            <input
+              name="email"
+              type="email"
+              required
+              className="mt-1 w-full p-2 border rounded-lg"
+              placeholder="Enter your email"
+            />
           </div>
 
           <div>
             <label className="text-sm font-medium">Password</label>
-            <input name="password" type="password" required className="mt-1 w-full p-2 border rounded-lg" />
+            <input
+              name="password"
+              type="password"
+              required
+              className="mt-1 w-full p-2 border rounded-lg"
+              placeholder="Enter your password"
+            />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
             disabled={loading}
           >
             {loading ? 'Signing in...' : 'Login'}
@@ -67,7 +91,10 @@ export default function LoginPage() {
         <p ref={msg} className="text-center text-sm text-red-600 mt-4"></p>
 
         <p className="text-center text-sm text-gray-600 mt-4">
-          Don’t have an account? <a href="/register" className="text-blue-600 hover:underline">Create one</a>
+          Don’t have an account?{' '}
+          <a href="/register" className="text-blue-600 hover:underline">
+            Create one
+          </a>
         </p>
       </div>
     </div>

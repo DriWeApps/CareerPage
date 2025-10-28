@@ -27,3 +27,4 @@ public/uploads/
 # Editor folders
 .vscode/
 .idea/
+.vercel

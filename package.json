@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "5.19.0",
@@ -17,10 +18,12 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.16",
-    "@types/react": "19.2.2",
+    "@types/node": "^24.9.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.13",
-    "typescript": "5.9.3"
+    "typescript": "^5.9.3"
   }
 }
