@@ -1,7 +1,9 @@
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
+
 import prisma from '../../../../lib/prisma';
 
-// Helper for consistent JSON responses
 function jsonResponse(data: any, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
@@ -9,32 +11,33 @@ function jsonResponse(data: any, status = 200) {
   });
 }
 
-// ✅ Fetch a single application by ID
 export async function GET(_: Request, { params }: any) {
   try {
     const id = Number(params.id);
+    if (isNaN(id)) return jsonResponse({ error: 'Invalid ID' }, 400);
+
     const app = await prisma.careerapplication.findUnique({ where: { id } });
     if (!app) return jsonResponse({ error: 'Not found' }, 404);
+
     return jsonResponse(app);
   } catch (err) {
-    console.error('GET error:', err);
-    return jsonResponse({ error: 'Failed to fetch application' }, 500);
+    console.error('GET /api/application/[id] error:', err);
+    return jsonResponse({ error: 'Server error' }, 500);
   }
 }
 
-// ✅ Delete application (no local file deletion — safe for Vercel)
 export async function DELETE(_: Request, { params }: any) {
   try {
     const id = Number(params.id);
+    if (isNaN(id)) return jsonResponse({ error: 'Invalid ID' }, 400);
+
     const app = await prisma.careerapplication.findUnique({ where: { id } });
     if (!app) return jsonResponse({ error: 'Not found' }, 404);
 
-    // Only delete from DB, not filesystem
     await prisma.careerapplication.delete({ where: { id } });
-
-    return jsonResponse({ message: 'Deleted successfully (file deletion skipped for Vercel)' });
+    return jsonResponse({ message: 'Deleted successfully' });
   } catch (err) {
-    console.error('DELETE error:', err);
-    return jsonResponse({ error: 'Failed to delete application' }, 500);
+    console.error('DELETE /api/application/[id] error:', err);
+    return jsonResponse({ error: 'Server error' }, 500);
   }
 }
