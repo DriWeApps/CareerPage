@@ -25,7 +25,11 @@ export default function HomePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow hover:shadow-xl transition">
           <h3 className="text-xl font-semibold text-teal-600">Sales & Marketing Executive</h3>
-          <p className="text-sm mt-2 text-gray-600">Location: Pune</p>
+          <p><strong>Education:</strong> MBA / BBA</p>
+          <p><strong>Description:</strong> Develop and maintain client relationships while executing effective marketing campaigns.</p>
+          <p className="flex items-center gap-1 text-sm mt-3 text-gray-600">
+            <strong>Location:</strong> <span>Pune</span>
+          </p>
           <button onClick={() => openForm('Sales & Marketing Executive')} className="mt-4 bg-black text-white px-4 py-2 rounded">
             Apply Now
           </button>
@@ -33,7 +37,11 @@ export default function HomePage() {
 
         <div className="bg-white p-6 rounded-lg shadow hover:shadow-xl transition">
           <h3 className="text-xl font-semibold text-teal-600">Document Verification Specialist</h3>
-          <p className="text-sm mt-2 text-gray-600">Location: Pune</p>
+          <p><strong>Education:</strong> 12th Pass or Any Graduation</p>
+          <p><strong>Description:</strong> Responsible for verifying and validating documents.</p>
+          <p className="flex items-center gap-1 text-sm mt-3 text-gray-600">
+            <strong>Location:</strong> <span>Pune</span>
+          </p>
           <button onClick={() => openForm('Document Verification Specialist')} className="mt-4 bg-black text-white px-4 py-2 rounded">
             Apply Now
           </button>
@@ -48,7 +56,6 @@ export default function HomePage() {
               const fd = new FormData(e.currentTarget as HTMLFormElement);
               const res = await fetch('/api/application', { method: 'POST', body: fd });
               if (res.ok) {
-                // show a friendly popup and close
                 alert('✅ Application submitted successfully');
                 setShowForm(false);
               } else {
